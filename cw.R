@@ -34,7 +34,7 @@ janitor::clean_names() %>%
   
 mutate(class = as_factor(class))
 
-# Get a birds eye view of how the dataset looks like and detect the Outilier 
+# Get a birds eye view of how the dataset looks like and detect the Outlier
 
 summary(vehicles_original)
 
@@ -44,7 +44,7 @@ vehicles_original %>%
   mutate(class = fct_reorder(class,value,median)) %>%
   ggplot(aes(class, value, fill = reorder(labels,value))) + 
   geom_boxplot() +
-  labs(title = "Outilier Detection for class: 'van'")
+  labs(title = "Outlier Detection for class: 'van'")
 
 
 vehicles_original %>%
@@ -53,7 +53,7 @@ vehicles_original %>%
   mutate(class = fct_reorder(class,value,median)) %>%
   ggplot(aes(class, value, fill = reorder(labels,value))) + 
   geom_boxplot() +
-  labs(title = "Outilier Detection for class: 'bus'")
+  labs(title = "Outlier Detection for class: 'bus'")
 
 vehicles_original %>%
   pivot_longer(2:19,names_to = "labels") %>%
@@ -61,7 +61,7 @@ vehicles_original %>%
   mutate(class = fct_reorder(class,value,median)) %>%
   ggplot(aes(class, value, fill = reorder(labels,value))) + 
   geom_boxplot() +
-  labs(title = "Outilier Detection for class: 'saab'")
+  labs(title = "Outlier Detection for class: 'saab'")
 
 vehicles_original %>%
   pivot_longer(2:19,names_to = "labels") %>%
@@ -69,7 +69,7 @@ vehicles_original %>%
   mutate(class = fct_reorder(class,value,median)) %>%
   ggplot(aes(class, value, fill = reorder(labels,value))) + 
   geom_boxplot() +
-  labs(title = "Outilier Detection for class: 'opel'")
+  labs(title = "Outlier Detection for class: 'opel'")
 
 # Remove the Outilier and create new one
 
