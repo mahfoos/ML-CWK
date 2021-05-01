@@ -12,7 +12,7 @@ library(tidymodels)
 
 library(ggfortify)
 
-
+library(cluster)
 
 
 
@@ -71,7 +71,7 @@ vehicles_original %>%
   geom_boxplot() +
   labs(title = "Outlier Detection for class: 'opel'")
 
-# Remove the Outilier and create new one
+# Remove the Outlier
 
 vehicles_bus = vehicles_original %>%
   filter(class == "bus") %>%
@@ -88,6 +88,8 @@ vehicles_opel = vehicles_original %>%
 vehicles_saab = vehicles_original %>%
   filter(class == "saab") %>%
   mutate(across(2:19, ~squish(.x, quantile(.x, c(.05, .95)))))
+
+# Combined the all claas 
 
 combined = bind_rows(list(vehicles_bus,vehicles_opel,vehicles_saab,vehicles_van)) %>%
   arrange(samples)
@@ -146,32 +148,35 @@ vehicles_data_points = combined %>%
 vehicles_scaled = vehicles_data_points %>%
   mutate(across(everything(), scale))
 
-vehicles_scaled
 
 set.seed(123)
 
 
-
-# Perform the kmeans using the NbClust function
+#Determining Optimal Number of Clusters
 
 # Use Euclidean for distance
-
 cluster_euclidean = NbClust(vehicles_scaled,distance="euclidean", min.nc=2,max.nc=10,method="kmeans",index="all")
+
+# Plot the best cluster 
+factoextra::fviz_nbclust(cluster_euclidean) + theme_minimal() + 
+  ggtitle("NbClust's optimal number of clusters")
 
 
 
 # Use manhattan for distance
-
 cluster_manhattan = NbClust(vehicles_scaled,distance="manhattan", min.nc=2,max.nc=15,method="kmeans",index="all")
 
-summary(combined)
+# Plot the best cluster 
+factoextra::fviz_nbclust(cluster_manhattan) + theme_minimal() + 
+  ggtitle("NbClust's optimal number of clusters")
 
-result<- kmeans(vehicles_scaled,2) # aplly k-means algorithm with no. of k = 2
 
-print(result)
+# The Silhouette Method
+fviz_nbclust(vehicles_scaled, kmeans, method = "silhouette", k.max = 24) + theme_minimal() + ggtitle("The Silhouette Plot")
 
-fviz_nbclust(vehicles_scaled, kmeans, method = "silhouette")
-fviz_nbclust(vehicles_scaled, kmeans, method = "wss")
+#compute k-means in R with the kmeans() function:
+result<- kmeans(vehicles_scaled ,centers = 2, nstart = 30) # aplly k-means algorithm with no. of k = 2
+
 # Cluster plot
 fviz_cluster(result, data = vehicles_scaled)
 
