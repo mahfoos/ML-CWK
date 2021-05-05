@@ -1,18 +1,16 @@
 library(tidyverse)
 
-library(readxl)
+library(readxl) # using for read the excel file
 
 library(factoextra)
 
-library(NbClust)
+library(NbClust)  # For finding cluster 
 
 library(caret)
 
 library(tidymodels)
 
-library(ggfortify)
 
-library(cluster)
 
 
 
@@ -133,7 +131,7 @@ combined %>%
   geom_boxplot() +
   labs(title = "Transformed Outliers for class: opel")
 
-#fviz_nbclust(x, FUNcluster, method = c("silhouette", "wss", "gap_stat"))
+
 
 
 # Remove the sample name and the class name. Both of these will be remove so that only n
@@ -180,4 +178,5 @@ result<- kmeans(vehicles_scaled ,centers = 2, nstart = 30) # aplly k-means algor
 # Cluster plot
 fviz_cluster(result, data = vehicles_scaled)
 
+#Printing the table 
 table(vehicles_original$class,result$cluster)
