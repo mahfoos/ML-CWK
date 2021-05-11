@@ -11,7 +11,7 @@ library(MLmetrics)
 Exchange_usd <- read_excel("D:/Accadamic Materials/IIT/02nd Year/Second Semester/Machine Learnig/CourseWork/ExchangeUSD.xlsx") 
 
 
-# data Explortion 
+# data Exploration 
 
 plot(Exchange_usd$`YYYY/MM/DD`)  # Plotting the YYYY/MM/DD Column
 plot(Exchange_usd$`USD/EUR`)   # Plotting the USD/EUR Column
@@ -25,9 +25,9 @@ timeseries_data   # Print time series
 
 # target and predictor features
 rate_original <-(timeseries_data)
-rate_leg <- stats::lag(rate_original,2)
-rate_all <- cbind(rate_original,rate_leg)
-colnames(rate_all) <- c('rate_original', 'rate_leg')
+rate_lag <- stats::lag(rate_original,1)
+rate_all <- cbind(rate_original,rate_lag)
+colnames(rate_all) <- c('rate_original', 'rate_lag')
 rate_all <- na.exclude(rate_all)
 
 # Normalizing 
@@ -47,7 +47,7 @@ plot(rate_train) # plotting the train data
 set.seed(123)
 # ANN Regression Fitting
 
-nueral_fit <- neuralnet(rate_original~rate_leg, data=rate_train, hidden=1, act.fct= tanh) #ternage
+nueral_fit <- neuralnet(rate_original~rate_lag, data=rate_train, hidden=1, act.fct= tanh) #ternage active function used
 nueral_fit$result.matrix
 
 # Graphic Neural network
@@ -56,7 +56,7 @@ plot(nueral_fit)
 
 
 # Test the accuracy of the model
-temp_test <- subset(rate_test, select = 'rate_leg')
+temp_test <- subset(rate_test, select = 'rate_lag')
 head(temp_test)
 nueral_fit.results <- compute(nueral_fit, temp_test)
 results <- data.frame(actual = rate_test$rate_original, predicted= nueral_fit.results$net.result)
@@ -65,11 +65,17 @@ results
 predicted <- nueral_fit.results$net.result
 actual <- rate_test$rate_original
 
-RMSE(predicted,actual) # score 
-RMSE(predicted,actual)
+# standard statistical indices
+RMSE(predicted,actual) 
+MAE(predicted,actual)
+MAPE(predicted,actual)
 
-plot(actual,main = "Real vs predicted", col='red')
+data <-data.frame(actual=actual, predicted = predicted)
 
+par(mfrow=c(1,2))
+plot(data$rate_original,data$predicted,col='red',main='Real vs predicted NN',pch=18,cex=0.7)
+abline(0,1,lwd=2)
+legend('bottomright',legend='NN',pch=18,col='red', bty='n')
 
 
 

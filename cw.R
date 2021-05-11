@@ -173,10 +173,13 @@ factoextra::fviz_nbclust(cluster_manhattan) + theme_minimal() +
 fviz_nbclust(vehicles_scaled, kmeans, method = "silhouette", k.max = 24) + theme_minimal() + ggtitle("The Silhouette Plot")
 
 #compute k-means in R with the kmeans() function:
-result<- kmeans(vehicles_scaled ,centers = 2, nstart = 30) # aplly k-means algorithm with no. of k = 2
+kmean_result<- kmeans(vehicles_scaled ,centers = 2, nstart = 30) # aplly k-means algorithm with no. of k = 2
+kmean_result$centers
+myData <- data.frame(myData, kmean_result$clustering)
+head(myData)
 
 # Cluster plot
-fviz_cluster(result, data = vehicles_scaled)
+fviz_cluster(kmean_result, data = vehicles_scaled)
 
 #Printing the table 
-table(vehicles_original$class,result$cluster)
+table(vehicles_original$class,kmean_result$cluster)
